@@ -1,0 +1,7 @@
+INFO:root:Session ID: string, User Query: Where is greengrow situated?, Model: gpt-4o
+INFO:root:Session ID: 0, User Query: Where is greengrow situated?, Model: llama3-70b-8192
+INFO:httpx:HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:root:Session ID: db63b969-8247-4ce8-a3d6-1aca0b3273ff, AI Response: I apologize, but I don't have enough information to provide an accurate answer. There might be multiple entities or locations with the name "Greengrow". Could you please provide more context or clarify which Greengrow you are referring to? Is it a company, a farm, a store, or something else? Additionally, is it located in a specific country or region? The more information you provide, the better I can assist you.
+INFO:root:Session ID: 0, User Query: Where is greengrow situated?, Model: llama3-70b-8192
+INFO:httpx:HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:root:Session ID: a8a17adf-432d-4165-8242-55c5a3a86e29, AI Response: GreenGrow is headquartered in Gurgaon, India.

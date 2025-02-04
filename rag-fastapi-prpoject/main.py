@@ -6,10 +6,10 @@ import os
 import uuid
 import logging
 import shutil
-rom pydantic_models import QueryInput, QueryResponse, DocumentInfo, DeleteFileRequest
+from pydantic_models import QueryInput, QueryResponse, DocumentInfo, DeleteFileRequest
 from langchain_utils import get_rag_chain
 from db_utils import insert_application_logs, get_chat_history, get_all_documents, insert_document_record, delete_document_record
-from chroma_utils import index_document_to_chroma, delete_doc_from_chroma
+from chroma_utils import index_document_to_chroma, delete_docs_from_chrome
 
 logging.basicConfig(filename='app.log',level=logging.INFO)
 
@@ -17,9 +17,10 @@ app=FastAPI()
 
 @app.post("/chat", response_model=QueryResponse)
 def chat(query_input: QueryInput):
-    session_id = query_input.session_id or str(uuid.uuid4())
+    session_id = query_input.session_id
     logging.info(f"Session ID: {session_id}, User Query: {query_input.question}, Model: {query_input.model.value}")
-
+    if not session_id:
+        session_id = str(uuid.uuid4())
     chat_history = get_chat_history(session_id)
     rag_chain = get_rag_chain(query_input.model.value)
     answer = rag_chain.invoke({
@@ -65,7 +66,7 @@ def list_documents():
 @app.post("/delete-doc")
 def delete_document(request: DeleteFileRequest):
     # Delete from Chroma
-    chroma_delete_success = delete_doc_from_chroma(request.file_id)
+    chroma_delete_success = delete_docs_from_chrome(request.file_id)
 
     if chroma_delete_success:
         # If successfully deleted from Chroma, delete from our database

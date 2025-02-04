@@ -1,4 +1,4 @@
-from langchain_openai import ChatOpenAI
+from langchain_groq import ChatGroq
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain.chains import create_history_aware_retriever, create_retrieval_chain
@@ -6,12 +6,13 @@ from langchain.chains.combine_documents import create_stuff_documents_chain
 from typing import List
 from langchain_core.documents import Document
 import os
+from dotenv import load_dotenv 
 from chroma_utils import vectorstore
 
 retriever = vectorstore.as_retriever(search_kwargs={"k": 2})
 output_parser = StrOutputParser()
 
-
+load_dotenv()
 contextualize_q_system_prompt = (
     "Given a chat history and the latest user question "
     "which might reference context in the chat history, "
@@ -38,8 +39,9 @@ qa_prompt = ChatPromptTemplate.from_messages([
 ])
 
 
-def get_rag_chain(model="gpt-4o-mini"):
-    llm = ChatOpenAI(model=model)
+def get_rag_chain(model="llama3-70b-8192"):
+    api_key = os.getenv("GROQ_API_KEY") 
+    llm =  ChatGroq(model=model,api_key=api_key)
     history_aware_retriever = create_history_aware_retriever(llm, retriever, contextualize_q_prompt)
     question_answer_chain = create_stuff_documents_chain(llm, qa_prompt)
     rag_chain = create_retrieval_chain(history_aware_retriever, question_answer_chain)    

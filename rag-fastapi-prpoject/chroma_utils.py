@@ -1,6 +1,7 @@
 from langchain_community.document_loaders import PyPDFLoader,Docx2txtLoader, UnstructuredHTMLLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
+
 from langchain_chroma import Chroma
 from typing import List
 from langchain_core.documents import Document
@@ -16,7 +17,7 @@ vectorstore = Chroma(persist_directory="./chroma_db", embedding_function=embeddi
 
 
 def load_split_documents(file_path:str)->List[Document]:
-    if file_path.endswih(".pdf"):
+    if file_path.endswith(".pdf"):
         loader = PyPDFLoader(file_path)
     elif file_path.endswith(".docx"):
         loader=Docx2txtLoader(file_path)
@@ -29,14 +30,14 @@ def load_split_documents(file_path:str)->List[Document]:
     return text_splitter.split_documents(documents)
 
 
-def index_documents_to_chrome(file_path:str,file_id:int)->bool:
+def index_document_to_chroma(file_path:str,file_id:int)->bool:
     try:
         splits=load_split_documents(file_path)
         for split in splits:
              split.metadata['file_id'] = file_id
         
         vectorstore.add_documents(splits)
-        # vectorstore.persist()
+        
         return True
     except Exception as e:
         print(f"Error indexing document: {e}")
